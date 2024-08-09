@@ -49,7 +49,7 @@ class overrideInstaceSegmentation(instanceSegmentation):
         for i, color in enumerate(colors):
             mask = masks[:,:,i]
             color = (1.0,0.0,0.0)
-            image = apply_mask(image, mask, color)
+            image = overrideInstaceSegmentation.apply_mask(image, mask, color)
             if not np.any(boxes[i]):
                 continue
 
