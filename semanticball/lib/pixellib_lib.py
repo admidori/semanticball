@@ -111,23 +111,18 @@ class overrideInstaceSegmentation(instanceSegmentation):
                         extract_segmented_objects=extract_segmented_objects, extract_from_box = extract_from_box,
                         save_extracted_objects=save_extracted_objects,
                         mask_points_values= mask_points_values)
-                    
-                        
                 output = cv2.resize(output, (width,height), interpolation=cv2.INTER_AREA)
 
                 if show_frames == True:
                     if frame_name is not None:
                         contours = opencv_lib.capture_edge(output)
-                        # フレームをPygame用に変換
                         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         frame = np.rot90(frame)
                         frame = pygame.surfarray.make_surface(frame)
-
-                        # 背景としてフレームを描画
                         screen.blit(frame, (0, 0))
 
                         for contour in contours:
-                            body, shape, vertices = box2d_lib.detection_vertices(contour)
+                            body, shape, vertices = box2d_lib.detection_vertices(contour, world)
                             if body is None:
                                 continue
                             if len(vertices) > 2:
@@ -139,7 +134,6 @@ class overrideInstaceSegmentation(instanceSegmentation):
                         #    if body.type == b2_staticBody:
                         #        world.DestroyBody(body)
 
-                        # ボールの更新と描画
                         for ball in balls:
                             ball.draw(screen)
                         
@@ -185,7 +179,8 @@ class overrideInstaceSegmentation(instanceSegmentation):
                                     (1 - alpha) + alpha * color[c] * 255,
                                     image[:, :, c])
         return image
-def segment(capture):
+def segment():
+    capture = cv2.VideoCapture(0)
     segment_video = overrideInstaceSegmentation()
     
     if os.path.exists("model/pointrend_resnet50.pkl"):
